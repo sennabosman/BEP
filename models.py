@@ -18,6 +18,7 @@ class Mountain(Model):
     with one missing person, one drone and multiple weather conditions."""
     def __init__(self, width, height):
         self.running = True
+        self.width = width
         self.grid = MultiGrid(width, width, True)
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
@@ -25,8 +26,9 @@ class Mountain(Model):
                              "battery_drone": lambda battery: drone.battery}
         )
         person_position = generate_position(width, height)
+        drone_position = (9, 9, 0)
         person = MissingPerson(person_position, 0.15, 0)
-        drone = Drone(generate_position(width, height), self, 1, person)
+        drone = Drone(drone_position, self, 1, person)
 
         self.schedule.add(drone)
 
@@ -60,23 +62,61 @@ class Drone(Agent):
         self.position = position
         self.person = person
         self.battery = 1
+        self.finding_radius = 10
 
-    def move(self):
-        possible_steps = self.model.grid.get_neighborhood(
-            self.pos, moore=True, include_center=False
-        )
-        new_position = random.choice(possible_steps)
-        if found_person(new_position, self.person.position):
+    def plowed_field_search(self):
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+        current_position = self.pos
+        starting_position = self.position
+        up = possible_steps[4]
+        down = possible_steps[3]
+        right = possible_steps[6]
+
+        if current_position[0] == starting_position[0]:
+            self.model.grid.move_agent(self, up)
+
+        if current_position[1] == self.model.width - self.finding_radius:
+            self.model.grid.move_agent(self, right)
+
+        if current_position[1] == self.finding_radius:
+            self.model.grid.move_agent(self, right)
+
+        if found_person(current_position, self.person.position):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
 
-        self.model.grid.move_agent(self, new_position)
+    def linear_search(self):
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+        current_position = self.pos
+
+        if found_person(current_position, self.person.position):
+            print("Missing person was found!")
+            self.person.found = True
+            self.model.running = False
+
+    def sector_search(self):
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+        current_position = self.pos
+
+        if found_person(current_position, self.person.position):
+            print("Missing person was found!")
+            self.person.found = True
+            self.model.running = False
+
+    def expanding_search(self):
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+        current_position = self.pos
+
+        if found_person(current_position, self.person.position):
+            print("Missing person was found!")
+            self.person.found = True
+            self.model.running = False
 
     def step(self):
         self.battery -= battery_decrement(10, 20)
         if self.battery > 0:
-            self.move()
+            self.plowed_field_search()
         else:
             print("Drone out of battery... Please charge!")
             self.model.running = False
