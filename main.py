@@ -20,8 +20,6 @@ def agent_portrayal(agent):
 
     return portrayal
 
-
-
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
 server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100})
 server.port = 8521
