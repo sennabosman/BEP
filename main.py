@@ -29,6 +29,7 @@ server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width"
 server.port = 8521
 server.launch()
 
+
 """--------------------------
 area = 63 km x 63 km
 pixel = 50 m x 50 m
