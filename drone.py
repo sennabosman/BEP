@@ -22,7 +22,7 @@ class Drone(Agent):
 
         x, y = self.pos
         max_y = self.model.width - 2 * self.finding_radius
-        steps_right = self.model.width / 10
+        steps_right = self.model.width / self.finding_radius
 
         if self.down is True and self.right is True and self.step_nr == steps_right:
             self.right = False
@@ -54,7 +54,7 @@ class Drone(Agent):
             self.model.grid.move_agent(self, new_pos)
             self.step_nr += 1
 
-        if found_person(self.pos, self.person.position):
+        if found_person(self.pos, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -62,10 +62,7 @@ class Drone(Agent):
     def linear_search(self):
         """A search pattern that searches for the missing person along a path."""
 
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        current_position = self.pos
-
-        if found_person(current_position, self.person.position):
+        if found_person(current_position, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -73,10 +70,7 @@ class Drone(Agent):
     def expanding_search(self):
         """A search pattern that searches for the missing person from its last known location."""
 
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        current_position = self.pos
-
-        if found_person(current_position, self.person.position):
+        if found_person(current_position, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -86,6 +80,8 @@ class Drone(Agent):
         if self.battery > 0:
             if self.person.georesq:
                 self.expanding_search()
+            elif self.person.path:
+                self.linear_search()
             else:
                 self.parallel_sweep_search()
         else:

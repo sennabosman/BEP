@@ -1,6 +1,7 @@
 from drone import Drone
-from model import Mountain
+from mountain import Mountain
 from missing_person import MissingPerson
+from environment import Environment
 
 import mesa
 
@@ -14,7 +15,15 @@ def agent_portrayal(agent):
         "r": 0.8
     }
 
-    if type(agent) is Drone:
+    if isinstance(agent, Environment):
+        if agent.slope_1 is True:
+            portrayal["Color"] = "lightgray"
+        elif agent.slope_2 is True:
+            portrayal["Color"] = "darkgrey"
+        elif agent.slope_3 is True:
+            portrayal["Color"] = "dimgrey"
+
+    elif type(agent) is Drone:
         portrayal["Color"] = "blue"
 
     elif type(agent) is MissingPerson:
