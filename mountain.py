@@ -4,8 +4,9 @@ from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
-from utils import generate_position
+from utils import generate_position, finding_radius
 from environment import Environment
+from variables import visibility
 
 
 class Mountain(Model):
@@ -22,7 +23,7 @@ class Mountain(Model):
                              "battery_drone": lambda battery: drone.battery}
         )
         person_position = generate_position(width, height)
-        drone_position = (9, 9, 0)
+        drone_position = (finding_radius(visibility) - 1, finding_radius(visibility) - 1)
         person = MissingPerson(person_position, 0.15, self, 2)
         drone = Drone(drone_position, self, 1, person)
 

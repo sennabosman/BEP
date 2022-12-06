@@ -1,4 +1,21 @@
 import random
+from variables import visibility, wind, temperature
+
+
+def finding_radius(visibility):
+    """This function returns the finding radius based on the meters of visibility, depending on fog."""
+    standard_radius = 1
+
+    if visibility == 500:
+        visibility_coefficient = 3
+    elif visibility == 250:
+        visibility_coefficient = 6
+    elif visibility == 100:
+        visibility_coefficient = 10
+    else:
+        return print("Please use one of the following values for the view: 100, 250 or 500.")
+
+    return standard_radius * visibility_coefficient
 
 
 def battery_decrement(wind, temperature):
@@ -28,10 +45,10 @@ def battery_decrement(wind, temperature):
 
 def found_person(position_drone, position_person):
     """This function checks if the missing person is within the finding radius of the drone."""
-    finding_radius = 10
+    finding_visibility = finding_radius(visibility)
     check_x = abs(position_drone[0] - position_person[0])
     check_y = abs(position_drone[1] - position_person[1])
-    if check_x < finding_radius and check_y < finding_radius:
+    if check_x < finding_visibility and check_y < finding_visibility:
         return True
     return False
 

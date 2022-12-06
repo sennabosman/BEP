@@ -1,5 +1,6 @@
 from mesa import Agent
-from utils import found_person, battery_decrement
+from utils import found_person, battery_decrement, finding_radius
+from variables import visibility, wind, temperature
 
 
 class Drone(Agent):
@@ -11,18 +12,19 @@ class Drone(Agent):
         self.position = position
         self.person = person
         self.battery = 1
-        self.finding_radius = 10
-        self.up = True
+        self.finding_radius = finding_radius(visibility)
+
+        self.step_nr = 0
         self.right = False
         self.down = False
-        self.step_nr = 0
+        self.up = True
 
     def parallel_sweep_search(self):
         """A search pattern that searches for the missing person in parallel lines."""
 
         x, y = self.pos
         max_y = self.model.width - 2 * self.finding_radius
-        steps_right = self.model.width / self.finding_radius
+        steps_right = self.finding_radius
 
         if self.down is True and self.right is True and self.step_nr == steps_right:
             self.right = False
@@ -76,7 +78,7 @@ class Drone(Agent):
             self.model.running = False
 
     def step(self):
-        self.battery -= battery_decrement(10, 20)
+        self.battery -= battery_decrement(wind, temperature)
         if self.battery > 0:
             if self.person.georesq:
                 self.expanding_search()
@@ -84,6 +86,7 @@ class Drone(Agent):
                 self.linear_search()
             else:
                 self.parallel_sweep_search()
+
         else:
             print("Drone out of battery... Please charge!")
             self.model.running = False

@@ -7,7 +7,7 @@ from environment import Environment
 class MissingPerson(Agent):
     """A person that gets missing in the mountains."""
 
-    def __init__(self, position, depth, model, unique_id, georesq=False, path=False):
+    def __init__(self, position, depth, model, unique_id, georesq=False, path=False, avalanche=False):
         super().__init__(position, model)
         self.unique_id = unique_id
         self.position = position
@@ -15,40 +15,41 @@ class MissingPerson(Agent):
         self.found = False
         self.georesq = georesq
         self.path = path
+        self.avalanche = avalanche
 
     def move(self):
 
         (x, y) = self.pos
 
-        if self.pos == (0, 0): #linksonder
+        if self.pos == (0, 0):  # linksonder
             new_position = (x + random.choice([0, 1]), y + random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (0, 99): #linksboven
+        elif self.pos == (0, 99):  # linksboven
             new_position = (x + random.choice([0, 1]), y - random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (99, 0): #rechtsonder
+        elif self.pos == (99, 0):  # rechtsonder
             new_position = (x - random.choice([0, 1]), y + random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (99, 99): #rechtsboven
+        elif self.pos == (99, 99):  # rechtsboven
             new_position = (x - random.choice([0, 1]), y - random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (0, y): #links
+        elif self.pos == (0, y):  # links
             new_position = (x + random.choice([0, 1]), y + random.choice([-1, 0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (x, 0): #onder
+        elif self.pos == (x, 0):  # onder
             new_position = (x + random.choice([-1, 0, 1]), y + random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (99, y): #rechts
+        elif self.pos == (99, y):  # rechts
             new_position = (x - random.choice([0, 1]), y + random.choice([-1, 0, 1]))
             self.model.grid.move_agent(self, new_position)
 
-        elif self.pos == (x, 99): #boven
+        elif self.pos == (x, 99):  # boven
             new_position = (x + random.choice([-1, 0, 1]), y - random.choice([0, 1]))
             self.model.grid.move_agent(self, new_position)
 
@@ -58,4 +59,5 @@ class MissingPerson(Agent):
             self.model.grid.move_agent(self, new_position)
 
     def step(self):
-        self.move()
+        if self.avalanche is False:
+            self.move()

@@ -1,21 +1,15 @@
+import mesa
 from drone import Drone
 from mountain import Mountain
 from missing_person import MissingPerson
 from environment import Environment
 
-import mesa
-
 
 def agent_portrayal(agent):
-    portrayal = {
-        "Shape": "circle",
-        "Color": "red",
-        "Filled": "true",
-        "Layer": 0,
-        "r": 0.8
-    }
+    """This function defines the colors of the different agents."""
+    portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 0, "r": 0.8}
 
-    if isinstance(agent, Environment):
+    if type(agent) is Environment:
         if agent.slope_1 is True:
             portrayal["Color"] = "lightgray"
         elif agent.slope_2 is True:
