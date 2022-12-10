@@ -10,17 +10,31 @@ def agent_portrayal(agent):
     portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 0, "r": 0.8}
 
     if type(agent) is Environment:
-        if agent.slope_1 is True:
-            portrayal["Color"] = "lightgray"
-        elif agent.slope_2 is True:
+        if agent.altitude < 1800:
+            portrayal["Color"] = "white"
+        elif 1800 <= agent.altitude < 2000:
+            portrayal["Color"] = "whitesmoke"
+        elif 2000 <= agent.altitude < 2200:
+            portrayal["Color"] = "gainsboro"
+        elif 2200 <= agent.altitude < 2400:
+            portrayal["Color"] = "lightgrey"
+        elif 2400 <= agent.altitude < 2600:
+            portrayal["Color"] = "silver"
+        elif 2600 <= agent.altitude < 2800:
             portrayal["Color"] = "darkgrey"
-        elif agent.slope_3 is True:
+        elif 2800 <= agent.altitude < 3000:
+            portrayal["Color"] = "grey"
+        elif agent.altitude >= 3000:
             portrayal["Color"] = "dimgrey"
 
     elif type(agent) is Drone:
+        portrayal["Shape"] = "circle"
         portrayal["Color"] = "blue"
+        portrayal["Layer"] = 1
 
     elif type(agent) is MissingPerson:
+        portrayal["Layer"] = 1
+        portrayal["Shape"] = "circle"
         if agent.found:
             portrayal["Color"] = "green"
 

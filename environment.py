@@ -1,11 +1,12 @@
 from mesa import Agent
+from utils import get_height_map
 
 
 class Environment(Agent):
-    def __init__(self, pos, slope_1, slope_2, slope_3, path, model):
+    def __init__(self, pos, altitude, path, model):
         super().__init__(pos, model)
-        self.slope_1 = slope_1  # gentle
-        self.slope_2 = slope_2  # medium
-        self.slope_3 = slope_3  # steep
+        self.pos = pos
+        self.altitude = altitude
         self.path = path  # presence of a path
         self.model = model
+
