@@ -25,11 +25,11 @@ def finding_radius(visibility):
     standard_radius = 1
 
     if visibility == 500:
-        visibility_coefficient = 3
+        visibility_coefficient = 10
     elif visibility == 250:
         visibility_coefficient = 6
     elif visibility == 100:
-        visibility_coefficient = 10
+        visibility_coefficient = 3
     else:
         return print("Please use one of the following values for the view: 100, 250 or 500.")
 

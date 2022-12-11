@@ -21,9 +21,17 @@ class Mountain(Model):
         self.schedule = RandomActivation(self)
         self.datacollector = DataCollector(
             agent_reporters={"battery_drone": lambda battery: drone.battery})
+
         person_position = generate_position(width, height)
-        drone_position = (finding_radius(visibility) - 1, finding_radius(visibility) - 1)
         person = MissingPerson(person_position, 0.15, self, 2)
+
+        if person.georesq:
+            drone_position = (50, 50)
+        elif person.path:
+            drone_position = (finding_radius(visibility) - 1, finding_radius(visibility) - 1)
+        else:
+            drone_position = (finding_radius(visibility) - 1, finding_radius(visibility) - 1)
+
         drone = Drone(drone_position, self, 1, person)
 
         self.schedule.add(drone)

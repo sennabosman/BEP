@@ -15,11 +15,13 @@ class Drone(Agent):
         self.finding_radius = finding_radius(visibility)
 
         self.step_nr = 0
+        self.steps_dir = 0
         self.right = False
+        self.left = False
         self.down = False
         self.up = True
 
-    def parallel_sweep_search(self):
+    def parallel_sweep(self):
         """A search pattern that searches for the missing person in parallel lines."""
 
         x, y = self.pos
@@ -69,23 +71,72 @@ class Drone(Agent):
             self.person.found = True
             self.model.running = False
 
-    def expanding_search(self):
+    def expanding_square(self):
         """A search pattern that searches for the missing person from its last known location."""
 
-        if found_person(current_position, self.person.pos):
+        x, y = self.pos
+
+        if found_person(self.pos, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
+
+        if self.steps_dir > 0:
+            if self.right is True:
+                new_pos = (x + 1, y)
+                self.model.grid.move_agent(self, new_pos)
+            if self.left is True:
+                new_pos = (x - 1, y)
+                self.model.grid.move_agent(self, new_pos)
+            if self.up is True:
+                new_pos = (x, y + 1)
+                self.model.grid.move_agent(self, new_pos)
+            if self.down is True:
+                new_pos = (x, y - 1)
+                self.model.grid.move_agent(self, new_pos)
+            self.steps_dir -= 1
+            return
+
+        if self.step_nr % 2:
+            print ((self.step_nr / 2) % 2)
+            if (self.step_nr / 2) % 2 == 0.5:
+                self.right = True
+                self.left = False
+                self.down = False
+                self.up = False
+                new_pos = (x + 1, y)
+            else:
+                self.right = False
+                self.left = True
+                self.down = False
+                self.up = False
+                new_pos = (x - 1, y)
+        else:
+            if (self.step_nr / 2) % 2:
+                self.right = False
+                self.left = False
+                self.down = True
+                self.up = False
+                new_pos = (x, y - 1)
+            else:
+                self.right = False
+                self.left = False
+                self.down = False
+                self.up = True
+                new_pos = (x, y + 1)
+        self.step_nr += 1
+        self.model.grid.move_agent(self, new_pos)
+        self.steps_dir = self.finding_radius * (self.step_nr / 2) - 1
 
     def step(self):
         self.battery -= battery_decrement(wind, temperature)
         if self.battery > 0:
             if self.person.georesq:
-                self.expanding_search()
+                self.expanding_square()
             elif self.person.path:
                 self.linear_search()
             else:
-                self.parallel_sweep_search()
+                self.parallel_sweep()
 
         else:
             print("Drone out of battery... Please charge!")

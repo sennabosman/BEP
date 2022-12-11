@@ -7,7 +7,7 @@ from environment import Environment
 class MissingPerson(Agent):
     """A person that gets missing in the mountains."""
 
-    def __init__(self, position, depth, model, unique_id, georesq=False, path=False, avalanche=False):
+    def __init__(self, position, depth, model, unique_id, georesq=True, path=False, avalanche=False):
         super().__init__(position, model)
         self.unique_id = unique_id
         self.position = position
