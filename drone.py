@@ -66,7 +66,7 @@ class Drone(Agent):
     def linear_search(self):
         """A search pattern that searches for the missing person along a path."""
 
-        if found_person(current_position, self.person.pos):
+        if found_person(self.pos, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False

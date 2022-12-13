@@ -10,7 +10,10 @@ def agent_portrayal(agent):
     portrayal = {"Shape": "circle", "Color": "red", "Filled": "true", "Layer": 0, "r": 0.8}
 
     if type(agent) is Environment:
-        if agent.altitude < 1800:
+        if agent.path:
+            portrayal["Color"] = "black"
+            portrayal["Layer"] = 2
+        elif agent.altitude < 1800:
             portrayal["Color"] = "white"
         elif 1800 <= agent.altitude < 2000:
             portrayal["Color"] = "whitesmoke"
