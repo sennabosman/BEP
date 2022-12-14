@@ -1,5 +1,4 @@
 from mesa import Agent
-from utils import get_height_map
 
 
 class Environment(Agent):

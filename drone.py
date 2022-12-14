@@ -5,14 +5,16 @@ from variables import visibility, wind, temperature
 
 class Drone(Agent):
     """A drone that searches for the missing person."""
-
-    def __init__(self, position, model, unique_id, person):
-        super().__init__(position, model)
+    def __init__(self, unique_id, x, y, model, person):
+        super().__init__(unique_id, model)
         self.unique_id = unique_id
-        self.position = position
+        self.x = x
+        self.y = y
         self.person = person
+
         self.battery = 1
         self.finding_radius = finding_radius(visibility)
+        self.speed = 1
 
         self.step_nr = 0
         self.steps_dir = 0
@@ -21,10 +23,15 @@ class Drone(Agent):
         self.down = False
         self.up = True
 
+    def xy_to_cell(self):
+        """This function converts the float position of the drone to integer coordinates of a cell."""
+        x = int(self.x)
+        y = int(self.y)
+        return x, y
+
     def parallel_sweep(self):
         """A search pattern that searches for the missing person in parallel lines."""
 
-        x, y = self.pos
         max_y = self.model.width - 2 * self.finding_radius
         steps_right = self.finding_radius
 
@@ -46,16 +53,13 @@ class Drone(Agent):
 
         if self.right is False:
             if self.up is True:
-                new_pos = (x, y + 1)
-                self.model.grid.move_agent(self, new_pos)
+                self.y += self.speed
                 self.step_nr += 1
             elif self.down is True:
-                new_pos = (x, y - 1)
-                self.model.grid.move_agent(self, new_pos)
+                self.y -= self.speed
                 self.step_nr += 1
         else:
-            new_pos = (x + 1, y)
-            self.model.grid.move_agent(self, new_pos)
+            self.x += self.speed
             self.step_nr += 1
 
         if found_person(self.pos, self.person.pos):
@@ -74,8 +78,6 @@ class Drone(Agent):
     def expanding_square(self):
         """A search pattern that searches for the missing person from its last known location."""
 
-        x, y = self.pos
-
         if found_person(self.pos, self.person.pos):
             print("Missing person was found!")
             self.person.found = True
@@ -83,49 +85,43 @@ class Drone(Agent):
 
         if self.steps_dir > 0:
             if self.right is True:
-                new_pos = (x + 1, y)
-                self.model.grid.move_agent(self, new_pos)
+                self.x += self.speed
             if self.left is True:
-                new_pos = (x - 1, y)
-                self.model.grid.move_agent(self, new_pos)
+                self.x -= self.speed
             if self.up is True:
-                new_pos = (x, y + 1)
-                self.model.grid.move_agent(self, new_pos)
+                self.y += self.speed
             if self.down is True:
-                new_pos = (x, y - 1)
-                self.model.grid.move_agent(self, new_pos)
+                self.y -= self.speed
             self.steps_dir -= 1
             return
 
         if self.step_nr % 2:
-            print ((self.step_nr / 2) % 2)
             if (self.step_nr / 2) % 2 == 0.5:
                 self.right = True
                 self.left = False
                 self.down = False
                 self.up = False
-                new_pos = (x + 1, y)
+                self.x += self.speed
             else:
                 self.right = False
                 self.left = True
                 self.down = False
                 self.up = False
-                new_pos = (x - 1, y)
+                self.x -= self.speed
         else:
             if (self.step_nr / 2) % 2:
                 self.right = False
                 self.left = False
                 self.down = True
                 self.up = False
-                new_pos = (x, y - 1)
+                self.y -= self.speed
             else:
                 self.right = False
                 self.left = False
                 self.down = False
                 self.up = True
-                new_pos = (x, y + 1)
+                self.y += self.speed
         self.step_nr += 1
-        self.model.grid.move_agent(self, new_pos)
         self.steps_dir = self.finding_radius * (self.step_nr / 2) - 1
 
     def step(self):
@@ -133,11 +129,14 @@ class Drone(Agent):
         if self.battery > 0:
             if self.person.georesq:
                 self.expanding_square()
+                cell = self.xy_to_cell()
+                self.model.grid.move_agent(self, cell)
             elif self.person.path:
                 self.linear_search()
             else:
                 self.parallel_sweep()
-
+                cell = self.xy_to_cell()
+                self.model.grid.move_agent(self, cell)
         else:
             print("Drone out of battery... Please charge!")
             self.model.running = False
