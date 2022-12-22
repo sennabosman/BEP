@@ -14,7 +14,11 @@ class MissingPerson(Agent):
         self.path = path
 
         self.found = False
-        self.speed = 0.2
+
+        if self.path:
+            self.speed = 0.0463  # if the agent is walking on a track, the speed is 0.0463 cells per model step
+        else:
+            self.speed = 0.0370  # if the agent is walking off track, the speed is 0.0370 cells per model step
 
     def xy_to_cell(self):
         """This function converts the float position of the missing person to integer coordinates of a cell."""
@@ -55,7 +59,9 @@ class MissingPerson(Agent):
             self.y += self.speed * random.choice(possible_steps)
 
     def step(self):
+        positions = []
         if self.avalanche is False:  # if there is no avalanche, the agent can move
             self.move()
             cell = self.xy_to_cell()
+            positions.append(cell)
             self.model.grid.move_agent(self, cell)

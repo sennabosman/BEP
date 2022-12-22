@@ -36,9 +36,23 @@ def finding_radius(visibility):
     return standard_radius * visibility_coefficient
 
 
-def battery_decrement(wind, temperature):
+def battery_decrement(wind, temperature, drone):
     """This function returns the average battery decrement per step based on the wind speed and temperature."""
-    standard_decrement = 0.001
+
+    if drone == 1:
+        standard_decrement = 0.0538
+    elif drone == 2:
+        standard_decrement = 0.0370
+    elif drone == 3:
+        standard_decrement = 0.0397
+    elif drone == 4:
+        standard_decrement = 0.0407
+    elif drone == 5:
+        standard_decrement = 0.0417
+    elif drone == 6:
+        standard_decrement = 0.0303
+    elif drone == 7:
+        standard_decrement = 0.0439
 
     if wind == 10:
         wind_coefficient = 1

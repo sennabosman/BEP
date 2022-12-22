@@ -1,6 +1,6 @@
 from mesa import Agent
 from utils import found_person, battery_decrement, finding_radius
-from variables import visibility, wind, temperature
+from variables import visibility, wind, temperature, drone
 
 
 class Drone(Agent):
@@ -12,9 +12,23 @@ class Drone(Agent):
         self.y = y
         self.person = person
 
+        if drone == 1:
+            self.speed = 0.4630
+        elif drone == 2:
+            self.speed = 0.6333
+        elif drone == 3:
+            self.speed = 0.5
+        elif drone == 4:
+            self.speed = 0.8333
+        elif drone == 5:
+            self.speed = 0.7667
+        elif drone == 6:
+            self.speed = 0.5667
+        elif drone == 7:
+            self.speed = 0.6667
+
         self.battery = 1
         self.finding_radius = finding_radius(visibility)
-        self.speed = 1
 
         self.step_nr = 0
         self.steps_dir = 0
@@ -125,7 +139,7 @@ class Drone(Agent):
         self.steps_dir = self.finding_radius * (self.step_nr / 2) - 1
 
     def step(self):
-        self.battery -= battery_decrement(wind, temperature)
+        self.battery -= battery_decrement(wind, temperature, drone)
         if self.battery > 0:
             if self.person.georesq:
                 self.expanding_square()
