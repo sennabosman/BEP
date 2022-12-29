@@ -1,6 +1,6 @@
 from mesa import Agent
 import random
-
+from utils import get_height_map
 
 class MissingPerson(Agent):
     """A person that gets missing in the mountains."""
@@ -9,9 +9,11 @@ class MissingPerson(Agent):
         self.unique_id = unique_id
         self.x = x
         self.y = y
+        self.height = 0
         self.georesq = georesq
         self.avalanche = avalanche
         self.path = path
+        self.heightmap = get_height_map()
 
         self.found = False
 
@@ -25,6 +27,28 @@ class MissingPerson(Agent):
         x = int(self.x)
         y = int(self.y)
         return x, y
+
+    def walk_height(self, new_position):
+        current_height = self.height
+        index = (new_position[0] * 100) + new_position[1]
+        next_height = self.heightmap[index][2]
+        difference = next_height - current_height
+        if difference > 0:
+            if self.path:
+                self.speed = 0.0363
+            else:
+                self.speed = 0.0270
+        elif difference == 0:
+            if self.path:
+                self.speed = 0.0463
+            else:
+                self.speed = 0.0370
+        else:
+            if self.path:
+                self.speed = 0.0513
+            else:
+                self.speed = 0.0420
+        self.height = next_height
 
     def move(self):
         """This function determines the walking behaviour of the missing person."""
@@ -59,9 +83,8 @@ class MissingPerson(Agent):
             self.y += self.speed * random.choice(possible_steps)
 
     def step(self):
-        positions = []
         if self.avalanche is False:  # if there is no avalanche, the agent can move
             self.move()
             cell = self.xy_to_cell()
-            positions.append(cell)
+            self.walk_height(cell)
             self.model.grid.move_agent(self, cell)

@@ -1,34 +1,35 @@
 from mesa import Agent
-from utils import found_person, battery_decrement, finding_radius
-from variables import visibility, wind, temperature, drone
+from utils import found_person, battery_decrement, finding_radius, get_height_map
 
 
 class Drone(Agent):
     """A drone that searches for the missing person."""
-    def __init__(self, unique_id, x, y, model, person):
+    def __init__(self, unique_id, x, y, model, person, params):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
         self.x = x
         self.y = y
+        self.height = 0
         self.person = person
+        self.params = params
 
-        if drone == 1:
+        if params['drone'] == 1:
             self.speed = 0.4630
-        elif drone == 2:
+        elif params['drone'] == 2:
             self.speed = 0.6333
-        elif drone == 3:
+        elif params['drone'] == 3:
             self.speed = 0.5
-        elif drone == 4:
+        elif params['drone'] == 4:
             self.speed = 0.8333
-        elif drone == 5:
+        elif params['drone'] == 5:
             self.speed = 0.7667
-        elif drone == 6:
+        elif params['drone'] == 6:
             self.speed = 0.5667
-        elif drone == 7:
+        elif params['drone'] == 7:
             self.speed = 0.6667
 
         self.battery = 1
-        self.finding_radius = finding_radius(visibility)
+        self.finding_radius = finding_radius(params['visibility'], params['drone'])
 
         self.step_nr = 0
         self.steps_dir = 0
@@ -37,11 +38,23 @@ class Drone(Agent):
         self.down = False
         self.up = True
 
+        self.heightmap = get_height_map()
+
+
     def xy_to_cell(self):
         """This function converts the float position of the drone to integer coordinates of a cell."""
         x = int(self.x)
         y = int(self.y)
         return x, y
+
+    def fly_height(self, new_position):
+        current_height = self.height
+        index = (new_position[0] * 100) + new_position[1]
+        next_height = self.heightmap[index][2] + (self.finding_radius * 30)
+        difference = next_height - current_height
+        if difference > 0:
+            self.battery -= 0.00001 * difference  # WAARDE AANPASSEN
+        self.height = next_height
 
     def parallel_sweep(self):
         """A search pattern that searches for the missing person in parallel lines."""
@@ -76,7 +89,7 @@ class Drone(Agent):
             self.x += self.speed
             self.step_nr += 1
 
-        if found_person(self.pos, self.person.pos):
+        if found_person(self.pos, self.person.pos, self.params['drone']):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -84,7 +97,7 @@ class Drone(Agent):
     def linear_search(self):
         """A search pattern that searches for the missing person along a path."""
 
-        if found_person(self.pos, self.person.pos):
+        if found_person(self.pos, self.person.pos, self.params['drone']):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -92,7 +105,7 @@ class Drone(Agent):
     def expanding_square(self):
         """A search pattern that searches for the missing person from its last known location."""
 
-        if found_person(self.pos, self.person.pos):
+        if found_person(self.pos, self.person.pos, self.params['drone']):
             print("Missing person was found!")
             self.person.found = True
             self.model.running = False
@@ -139,17 +152,19 @@ class Drone(Agent):
         self.steps_dir = self.finding_radius * (self.step_nr / 2) - 1
 
     def step(self):
-        self.battery -= battery_decrement(wind, temperature, drone)
+        self.battery -= battery_decrement(self.params['wind'], self.params['temperature'], self.params['drone'])
         if self.battery > 0:
             if self.person.georesq:
                 self.expanding_square()
                 cell = self.xy_to_cell()
+                self.fly_height(cell)
                 self.model.grid.move_agent(self, cell)
             elif self.person.path:
                 self.linear_search()
             else:
                 self.parallel_sweep()
                 cell = self.xy_to_cell()
+                self.fly_height(cell)
                 self.model.grid.move_agent(self, cell)
         else:
             print("Drone out of battery... Please charge!")

@@ -20,9 +20,15 @@ def get_height_map():
     return height_map
 
 
-def finding_radius(visibility):
+def finding_radius(visibility, drone):
     """This function returns the finding radius based on the meters of visibility, depending on fog."""
-    standard_radius = 1
+
+    if drone == 1 or drone == 7:
+        standard_radius = 1
+    elif drone == 2 or drone == 3:
+        standard_radius = 0.6
+    elif drone == 4 or drone == 5 or drone == 6:
+        standard_radius = 1.2
 
     if visibility == 500:
         visibility_coefficient = 10
@@ -40,19 +46,19 @@ def battery_decrement(wind, temperature, drone):
     """This function returns the average battery decrement per step based on the wind speed and temperature."""
 
     if drone == 1:
-        standard_decrement = 0.0538
+        standard_decrement = 0.000538
     elif drone == 2:
-        standard_decrement = 0.0370
+        standard_decrement = 0.000370
     elif drone == 3:
-        standard_decrement = 0.0397
+        standard_decrement = 0.000397
     elif drone == 4:
-        standard_decrement = 0.0407
+        standard_decrement = 0.000407
     elif drone == 5:
-        standard_decrement = 0.0417
+        standard_decrement = 0.000417
     elif drone == 6:
-        standard_decrement = 0.0303
+        standard_decrement = 0.000303
     elif drone == 7:
-        standard_decrement = 0.0439
+        standard_decrement = 0.000439
 
     if wind == 10:
         wind_coefficient = 1
@@ -75,9 +81,9 @@ def battery_decrement(wind, temperature, drone):
     return standard_decrement * wind_coefficient * temperature_coefficient
 
 
-def found_person(position_drone, position_person):
+def found_person(position_drone, position_person, drone):
     """This function checks if the missing person is within the finding radius of the drone."""
-    finding_visibility = finding_radius(visibility)
+    finding_visibility = finding_radius(visibility, drone)
     check_x = abs(position_drone[0] - position_person[0])
     check_y = abs(position_drone[1] - position_person[1])
     if check_x < finding_visibility and check_y < finding_visibility:

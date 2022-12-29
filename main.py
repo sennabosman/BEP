@@ -1,4 +1,6 @@
 import mesa
+import pandas as pd
+
 from drone import Drone
 from mountain import Mountain
 from missing_person import MissingPerson
@@ -44,14 +46,27 @@ def agent_portrayal(agent):
     return portrayal
 
 
-grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
-server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100})
-server.port = 8521
-server.launch()
+params = {
+    "visibility": 500,
+    "wind": 10,
+    "temperature": 20,
+    "drone": 1,
+}
 
+#grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
+#server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "params": params})
+#server.port = 8521
+#server.launch()
 
-"""--------------------------
-area = 63 km x 63 km
-pixel = 50 m x 50 m
-grid = 1285 pixel x 1285 pixel
----------------------------"""
+results = mesa.batch_run(
+    Mountain,
+    parameters={"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 1},
+    iterations=1,
+    max_steps=1000,
+    number_processes=1,
+    data_collection_period=1,
+    display_progress=True,
+)
+results_df = pd.DataFrame(results)
+results_df.to_csv("Data/test1.csv")
+print(results_df)
