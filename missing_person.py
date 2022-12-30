@@ -4,7 +4,7 @@ from utils import get_height_map
 
 class MissingPerson(Agent):
     """A person that gets missing in the mountains."""
-    def __init__(self, unique_id, x, y, model, georesq=False, avalanche=False, path=False):
+    def __init__(self, unique_id, x, y, model, path, georesq=False, avalanche=False):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
         self.x = x
@@ -50,8 +50,39 @@ class MissingPerson(Agent):
                 self.speed = 0.0420
         self.height = next_height
 
-    def move(self):
-        """This function determines the walking behaviour of the missing person."""
+    def move_path(self):
+        end = (90, 80)
+        position = self.xy_to_cell()
+        x, y = position
+        x_end, y_end = end
+
+        dx = abs(x - x_end)
+        dy = abs(y - y_end)
+
+        if dy > dx:
+            if (y_end - y) > 0:
+                self.y += self.speed
+            else:
+                self.y -= self.speed
+
+        elif dx > dy:
+            if (x_end - x) > 0:
+                self.x += self.speed
+            else:
+                self.x -= self.speed
+
+        else:
+            if (x_end - x) > 0:
+                self.x += self.speed
+            else:
+                self.x -= self.speed
+            if (y_end - y) > 0:
+                self.y += self.speed
+            else:
+                self.y -= self.speed
+
+    def move_random(self):
+        """This function determines the random walking behaviour of the missing person."""
         current_cell = self.xy_to_cell()
         if current_cell == (0, 0):  # if agent is in left bottom corner, move right and/or up
             self.x += self.speed * random.choice([0, 1])
@@ -83,8 +114,15 @@ class MissingPerson(Agent):
             self.y += self.speed * random.choice(possible_steps)
 
     def step(self):
-        if self.avalanche is False:  # if there is no avalanche, the agent can move
-            self.move()
+        if self.path:
+            self.move_path()
             cell = self.xy_to_cell()
             self.walk_height(cell)
             self.model.grid.move_agent(self, cell)
+        else:
+            if self.avalanche is False:  # if there is no avalanche, the agent can move
+                self.move_random()
+                cell = self.xy_to_cell()
+                self.walk_height(cell)
+                self.model.grid.move_agent(self, cell)
+

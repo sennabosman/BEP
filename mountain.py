@@ -13,7 +13,7 @@ class Mountain(Model):
     """A model that simulates a search and rescue process in the mountains
     with one missing person, one drone and multiple weather conditions."""
 
-    def __init__(self, width, height, visibility, wind, temperature, drone):
+    def __init__(self, width, height, visibility, wind, temperature, drone, path):
         self.running = True
         self.width = width
         self.grid = MultiGrid(width, width, True)
@@ -25,15 +25,19 @@ class Mountain(Model):
                              "position_person_x": lambda position_person_x: person.x,
                              "position_person_y": lambda position_person_y: person.y}
         )
+        self.path = path
 
-        person_position = generate_position(width, height)
-        person = MissingPerson(2, person_position[0], person_position[1], self)
+        if self.path:
+            person_position = (15, 20)
+        else:
+            person_position = generate_position(width, height)
+        person = MissingPerson(2, person_position[0], person_position[1], self, self.path)
 
         finding_radius_value = finding_radius(visibility, drone)
         if person.georesq:
             drone_position = (50, 50)
-        #elif person.path:
-            #drone_position = (finding_radius(visibility) - 1, finding_radius(visibility) - 1)
+        elif person.path:
+            drone_position = (90, 82)
         else:
             drone_position = (finding_radius_value - 1, finding_radius_value - 1)
 
@@ -55,12 +59,12 @@ class Mountain(Model):
         i = 0
         for (contents, x, y) in self.grid.coord_iter():
             cell = Environment((x, y), height_map[i][2], False, self)
-            i += 1
             if x == person_position[0] and y == person_position[1]:
                 person.height = height_map[i][2]
             if x == drone_position[0] and y == drone_position[1]:
                 drone_agent.height = height_map[i][2] + (finding_radius_value * 30)
             self.grid.place_agent(cell, (x, y))
+            i += 1
 
     def step(self):
         self.datacollector.collect(self)

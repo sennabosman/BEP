@@ -49,8 +49,9 @@ class Drone(Agent):
 
     def fly_height(self, new_position):
         current_height = self.height
-        index = (new_position[0] * 100) + new_position[1]
+        index = ((new_position[0]) * 100) + (new_position[1])
         next_height = self.heightmap[index][2] + (self.finding_radius * 30)
+        print(current_height, next_height, index)
         difference = next_height - current_height
         if difference > 0:
             self.battery -= 0.00001 * difference  # WAARDE AANPASSEN
@@ -94,8 +95,38 @@ class Drone(Agent):
             self.person.found = True
             self.model.running = False
 
-    def linear_search(self):
+    def track_line(self):
         """A search pattern that searches for the missing person along a path."""
+
+        end = (15, 20)
+        position = self.xy_to_cell()
+        x, y = position
+        x_end, y_end = end
+
+        dx = abs(x - x_end)
+        dy = abs(y - y_end)
+
+        if dy > dx:
+            if (y_end - y) > 0:
+                self.y += self.speed
+            else:
+                self.y -= self.speed
+
+        elif dx > dy:
+            if (x_end - x) > 0:
+                self.x += self.speed
+            else:
+                self.x -= self.speed
+
+        else:
+            if (x_end - x) > 0:
+                self.x += self.speed
+            else:
+                self.x -= self.speed
+            if (y_end - y) > 0:
+                self.y += self.speed
+            else:
+                self.y -= self.speed
 
         if found_person(self.pos, self.person.pos, self.params['drone']):
             print("Missing person was found!")
@@ -160,7 +191,10 @@ class Drone(Agent):
                 self.fly_height(cell)
                 self.model.grid.move_agent(self, cell)
             elif self.person.path:
-                self.linear_search()
+                self.track_line()
+                cell = self.xy_to_cell()
+                self.fly_height(cell)
+                self.model.grid.move_agent(self, cell)
             else:
                 self.parallel_sweep()
                 cell = self.xy_to_cell()

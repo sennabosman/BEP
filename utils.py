@@ -9,8 +9,8 @@ def get_height_map():
         height_map = []
         x = 0
         y = 0
-        while y < 101:
-            while x < 101:
+        while y < 100:
+            while x < 100:
                 pos = parser.get_idx(3013 + y, 1985 + x)
                 height = parser.get_value(pos)
                 height_map.append((y, x, height))

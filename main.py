@@ -53,12 +53,12 @@ params = {
     "drone": 1,
 }
 
-#grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
-#server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "params": params})
-#server.port = 8521
-#server.launch()
+grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
+server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 1, "path": True})
+server.port = 8521
+server.launch()
 
-results = mesa.batch_run(
+"""results = mesa.batch_run(
     Mountain,
     parameters={"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 1},
     iterations=1,
@@ -69,4 +69,4 @@ results = mesa.batch_run(
 )
 results_df = pd.DataFrame(results)
 results_df.to_csv("Data/test1.csv")
-print(results_df)
+print(results_df)"""
