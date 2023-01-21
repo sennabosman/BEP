@@ -23,15 +23,19 @@ def get_height_map():
 def finding_radius(visibility, drone):
     """This function returns the finding radius based on the meters of visibility, depending on fog."""
 
-    if drone == 1 or drone == 7:
-        standard_radius = 1
-    elif drone == 2 or drone == 3:
-        standard_radius = 0.6
-    elif drone == 4 or drone == 5 or drone == 6:
-        standard_radius = 1.2
+    if drone == 1 or drone == 4 or drone == 5:
+        standard_radius = 2
+    elif drone == 7:
+        standard_radius = 3.5
+    elif drone == 2:
+        standard_radius = 2.5
+    elif drone == 3:
+        standard_radius = 3
+    elif drone == 6:
+        standard_radius = 1.5
 
     if visibility == 500:
-        visibility_coefficient = 10
+        visibility_coefficient = 1
     elif visibility == 250:
         visibility_coefficient = 6
     elif visibility == 100:

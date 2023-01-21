@@ -14,19 +14,19 @@ class Drone(Agent):
         self.params = params
 
         if params['drone'] == 1:
-            self.speed = 0.4630
+            self.speed = 0.4633
         elif params['drone'] == 2:
-            self.speed = 0.6333
+            self.speed = 0.6338
         elif params['drone'] == 3:
-            self.speed = 0.5
+            self.speed = 0.5004
         elif params['drone'] == 4:
-            self.speed = 0.8333
+            self.speed = 0.8340
         elif params['drone'] == 5:
-            self.speed = 0.7667
+            self.speed = 0.7673
         elif params['drone'] == 6:
-            self.speed = 0.5667
+            self.speed = 0.5671
         elif params['drone'] == 7:
-            self.speed = 0.6667
+            self.speed = 0.6672
 
         self.battery = 1
         self.finding_radius = finding_radius(params['visibility'], params['drone'])
@@ -40,7 +40,6 @@ class Drone(Agent):
 
         self.heightmap = get_height_map()
 
-
     def xy_to_cell(self):
         """This function converts the float position of the drone to integer coordinates of a cell."""
         x = int(self.x)
@@ -49,8 +48,9 @@ class Drone(Agent):
 
     def fly_height(self, new_position):
         current_height = self.height
-        index = ((new_position[0]) * 100) + (new_position[1])
-        next_height = self.heightmap[index][2] + (self.finding_radius * 30)
+        print(new_position)
+        index = (99 - new_position[1]) * 100 + new_position[0]
+        next_height = self.heightmap[index][2] + self.finding_radius * 30
         print(current_height, next_height, index)
         difference = next_height - current_height
         if difference > 0:
@@ -60,35 +60,34 @@ class Drone(Agent):
     def parallel_sweep(self):
         """A search pattern that searches for the missing person in parallel lines."""
 
-        max_y = self.model.width - 2 * self.finding_radius
-        steps_right = self.finding_radius
+        steps_right = round(self.finding_radius)
 
-        if self.down is True and self.right is True and self.step_nr == steps_right:
+        if self.down is True and self.right is True and round(self.step_nr) == steps_right:
             self.right = False
             self.down = False
             self.up = True
             self.step_nr = 0
 
-        if self.up is True and self.right is True and self.step_nr == steps_right:
+        if self.up is True and self.right is True and round(self.step_nr) == steps_right:
             self.right = False
             self.down = True
             self.up = False
             self.step_nr = 0
 
-        if self.step_nr == max_y:
+        if round(self.step_nr - 2 * self.finding_radius) == (self.model.width - 2 * self.finding_radius):
             self.right = True
             self.step_nr = 0
 
         if self.right is False:
             if self.up is True:
                 self.y += self.speed
-                self.step_nr += 1
+                self.step_nr += (1 * self.speed)
             elif self.down is True:
                 self.y -= self.speed
-                self.step_nr += 1
+                self.step_nr += (1 * self.speed)
         else:
             self.x += self.speed
-            self.step_nr += 1
+            self.step_nr += (1 * self.speed)
 
         if found_person(self.pos, self.person.pos, self.params['drone']):
             print("Missing person was found!")
@@ -98,7 +97,7 @@ class Drone(Agent):
     def track_line(self):
         """A search pattern that searches for the missing person along a path."""
 
-        end = (15, 20)
+        end = (38, 54)
         position = self.xy_to_cell()
         x, y = position
         x_end, y_end = end

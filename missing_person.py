@@ -30,7 +30,7 @@ class MissingPerson(Agent):
 
     def walk_height(self, new_position):
         current_height = self.height
-        index = (new_position[0] * 100) + new_position[1]
+        index = ((99 - new_position[0]) * 100) + new_position[1]
         next_height = self.heightmap[index][2]
         difference = next_height - current_height
         if difference > 0:
@@ -51,7 +51,7 @@ class MissingPerson(Agent):
         self.height = next_height
 
     def move_path(self):
-        end = (90, 80)
+        end = (64, 88)
         position = self.xy_to_cell()
         x, y = position
         x_end, y_end = end

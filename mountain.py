@@ -13,7 +13,7 @@ class Mountain(Model):
     """A model that simulates a search and rescue process in the mountains
     with one missing person, one drone and multiple weather conditions."""
 
-    def __init__(self, width, height, visibility, wind, temperature, drone, path):
+    def __init__(self, width, height, visibility, wind, temperature, drone, path, georesq):
         self.running = True
         self.width = width
         self.grid = MultiGrid(width, width, True)
@@ -26,18 +26,22 @@ class Mountain(Model):
                              "position_person_y": lambda position_person_y: person.y}
         )
         self.path = path
+        self.georesq = georesq
 
         if self.path:
-            person_position = (15, 20)
+            person_position = (38, 54)
+        elif self.georesq:
+            person_position = (42, 59)
         else:
-            person_position = generate_position(width, height)
-        person = MissingPerson(2, person_position[0], person_position[1], self, self.path)
+            person_position = (12, 81)
 
+        person = MissingPerson(2, person_position[0], person_position[1], self, self.path)
         finding_radius_value = finding_radius(visibility, drone)
+
         if person.georesq:
             drone_position = (50, 50)
         elif person.path:
-            drone_position = (90, 82)
+            drone_position = (64, 88)
         else:
             drone_position = (finding_radius_value - 1, finding_radius_value - 1)
 
@@ -47,13 +51,13 @@ class Mountain(Model):
             "temperature": temperature,
             "drone": drone,
         }
-        drone_agent = Drone(1, drone_position[0], drone_position[1], self, person, params)
+        drone_agent = Drone(1, int(drone_position[0]), int(drone_position[1]), self, person, params)
 
         self.schedule.add(drone_agent)
         self.schedule.add(person)
 
         self.grid.place_agent(person, (person_position[0], person_position[1]))
-        self.grid.place_agent(drone_agent, (drone_position[0], drone_position[1]))
+        self.grid.place_agent(drone_agent, (int(drone_position[0]), int(drone_position[1])))
 
         height_map = get_height_map()
         i = 0

@@ -50,23 +50,29 @@ params = {
     "visibility": 500,
     "wind": 10,
     "temperature": 20,
-    "drone": 1,
+    "drone": 7,
 }
 
-grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
-server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 1, "path": True})
-server.port = 8521
-server.launch()
+#grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
+#server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 7, "path": False})
+#server.port = 8521
+#server.launch()
 
-"""results = mesa.batch_run(
-    Mountain,
-    parameters={"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 1},
-    iterations=1,
-    max_steps=1000,
-    number_processes=1,
-    data_collection_period=1,
-    display_progress=True,
-)
-results_df = pd.DataFrame(results)
-results_df.to_csv("Data/test1.csv")
-print(results_df)"""
+j = 1
+
+while j < 8:
+    for i in range(10):
+        results = mesa.batch_run(
+            Mountain,
+            parameters={"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": j,
+                        "path":True, "georesq":False},
+            iterations=1,
+            max_steps=10000,
+            number_processes=1,
+            data_collection_period=1,
+            display_progress=True,
+        )
+        results_df = pd.DataFrame(results)
+        results_df.to_csv(f"Data/D{j}/500_10_20_{j}_yespath_noavalanche_nogeoresq_{i}.csv")
+        print(results_df)
+    j += 1
