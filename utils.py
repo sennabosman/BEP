@@ -37,9 +37,9 @@ def finding_radius(visibility, drone):
     if visibility == 500:
         visibility_coefficient = 1
     elif visibility == 250:
-        visibility_coefficient = 6
+        visibility_coefficient = 0.8
     elif visibility == 100:
-        visibility_coefficient = 3
+        visibility_coefficient = 0.6
     else:
         return print("Please use one of the following values for the view: 100, 250 or 500.")
 
@@ -69,14 +69,14 @@ def battery_decrement(wind, temperature, drone):
     elif wind == 25:
         wind_coefficient = 1.1
     elif wind == 35:
-        wind_coefficient = 1.3
+        wind_coefficient = 1.15
     else:
         return print("Please use one of the following values for the wind: 10, 25 or 35.")
 
     if temperature == -15:
-        temperature_coefficient = 1.5
+        temperature_coefficient = 1.1
     elif temperature == 0:
-        temperature_coefficient = 1.3
+        temperature_coefficient = 1.05
     elif temperature == 20:
         temperature_coefficient = 1
     else:

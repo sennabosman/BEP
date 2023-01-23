@@ -74,7 +74,7 @@ class Drone(Agent):
             self.up = False
             self.step_nr = 0
 
-        if round(self.step_nr - 2 * self.finding_radius) == (self.model.width - 2 * self.finding_radius):
+        if round(self.step_nr - 2 * self.finding_radius) == (self.model.width - 2 * round(self.finding_radius)):
             self.right = True
             self.step_nr = 0
 
