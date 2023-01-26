@@ -58,7 +58,7 @@ params = {
 #server.port = 8521
 #server.launch()
 
-j = 1
+"""j = 1
 
 while j < 8:
     for i in range(10):
@@ -75,4 +75,4 @@ while j < 8:
         results_df = pd.DataFrame(results)
         results_df.to_csv(f"Data/D{j}/yespath_nogeoresq/gemiddeldweer/250_25_0_{j}_yespath_noavalanche_nogeoresq_{i}.csv")
         print(results_df)
-    j += 1
+    j += 1"""
