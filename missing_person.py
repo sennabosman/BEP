@@ -55,7 +55,6 @@ class MissingPerson(Agent):
         position = self.xy_to_cell()
         x, y = position
         x_end, y_end = end
-
         dx = abs(x - x_end)
         dy = abs(y - y_end)
 
