@@ -35,9 +35,9 @@ class MissingPerson(Agent):
         difference = next_height - current_height
         if difference > 0:
             if self.path:
-                self.speed = 0.0363
+                self.speed = 0.0309
             else:
-                self.speed = 0.0270
+                self.speed = 0.0247
         elif difference == 0:
             if self.path:
                 self.speed = 0.0463
@@ -45,9 +45,9 @@ class MissingPerson(Agent):
                 self.speed = 0.0370
         else:
             if self.path:
-                self.speed = 0.0513
+                self.speed = 0.0618
             else:
-                self.speed = 0.0420
+                self.speed = 0.0494
         self.height = next_height
 
     def move_path(self):
