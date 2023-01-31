@@ -4,7 +4,7 @@ from utils import found_person, battery_decrement, finding_radius, get_height_ma
 
 class Drone(Agent):
     """A drone that searches for the missing person."""
-    def __init__(self, unique_id, x, y, model, person, params):
+    def __init__(self, unique_id, x, y, model, person, params, speed=1):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
         self.x = x
@@ -12,6 +12,7 @@ class Drone(Agent):
         self.height = 0
         self.person = person
         self.params = params
+        self.speed = speed
 
         if params['drone'] == 1:
             self.speed = 0.4633

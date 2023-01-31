@@ -31,7 +31,7 @@ def finding_radius(visibility, drone):
         standard_radius = 2.5
     elif drone == 3:
         standard_radius = 3
-    elif drone == 6:
+    else:
         standard_radius = 1.5
 
     if visibility == 500:
@@ -61,7 +61,7 @@ def battery_decrement(wind, temperature, drone):
         standard_decrement = 0.000417
     elif drone == 6:
         standard_decrement = 0.000303
-    elif drone == 7:
+    else:
         standard_decrement = 0.000439
 
     if wind == 10:

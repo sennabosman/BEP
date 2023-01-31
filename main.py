@@ -46,33 +46,31 @@ def agent_portrayal(agent):
     return portrayal
 
 
-params = {
+"""params = {
     "visibility": 250,
     "wind": 25,
     "temperature": 0,
     "drone": 7,
-}
+}"""
 
 #grid = mesa.visualization.CanvasGrid(agent_portrayal, 100, 100, 500, 500)
 #server = mesa.visualization.ModularServer(Mountain, [grid], "Mountain", {"width": 100, "height": 100, "visibility": 500, "wind": 10, "temperature": 20, "drone": 7, "path": False})
 #server.port = 8521
 #server.launch()
 
-"""j = 1
 
-while j < 8:
-    for i in range(10):
-        results = mesa.batch_run(
-            Mountain,
-            parameters={"width": 100, "height": 100, "visibility": 250, "wind": 25, "temperature": 0, "drone": j,
-                        "path":True, "georesq":False},
-            iterations=1,
-            max_steps=10000,
-            number_processes=1,
-            data_collection_period=1,
-            display_progress=True,
+for i in range(1, 8):
+    results = mesa.batch_run(
+        Mountain,
+        parameters={"width": 100, "height": 100, "visibility": 250, "wind": 25, "temperature": 0, "drone": i,
+                    "path": False, "georesq": False},
+        iterations=100,
+        max_steps=10000,
+        number_processes=1,
+        data_collection_period=1,
+        display_progress=True
         )
-        results_df = pd.DataFrame(results)
-        results_df.to_csv(f"Data/D{j}/yespath_nogeoresq/gemiddeldweer/250_25_0_{j}_yespath_noavalanche_nogeoresq_{i}.csv")
-        print(results_df)
-    j += 1"""
+    results_df = pd.DataFrame(results)
+    results_df.to_csv(f"Data/D{i}/nopath_nogeoresq/gemiddeldweer/GEW_E1_D{i}.csv")
+    print(results_df)
+
