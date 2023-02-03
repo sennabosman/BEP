@@ -3,7 +3,7 @@ import pandas as pd
 
 os.getcwd()
 
-filepath = f"Data/D7/yespath_nogeoresq/slechtweer/SLW_E3_D7.csv"
+filepath = f"Data/Gevoeligheidsanalyse/GVA_UV4_D7.csv"
 results = pd.read_csv(filepath)
 
 
@@ -19,4 +19,4 @@ def find_last_step(results):
 
 results_filtered = find_last_step(results)
 
-results_filtered.to_csv(f"Data/D7/yespath_nogeoresq/slechtweer/SLW_E3_D7_lastrow.csv")
+results_filtered.to_csv(f"Data/Gevoeligheidsanalyse/GVA_UV4_D7_lastrow.csv")

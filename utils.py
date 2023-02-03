@@ -39,7 +39,7 @@ def finding_radius(visibility, drone):
     elif visibility == 250:
         visibility_coefficient = 0.8
     elif visibility == 100:
-        visibility_coefficient = 0.6
+        visibility_coefficient = 0.75
     else:
         return print("Please use one of the following values for the view: 100, 250 or 500.")
 

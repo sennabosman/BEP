@@ -63,7 +63,7 @@ for i in range(1, 8):
     results = mesa.batch_run(
         Mountain,
         parameters={"width": 100, "height": 100, "visibility": 100, "wind": 35, "temperature": -15, "drone": i,
-                    "path": True, "georesq": False},
+                    "path": False, "georesq": True},
         iterations=100,
         max_steps=10000,
         number_processes=1,
@@ -71,5 +71,5 @@ for i in range(1, 8):
         display_progress=True
         )
     results_df = pd.DataFrame(results)
-    results_df.to_csv(f"Data/D{i}/yespath_nogeoresq/slechtweer/SLW_E3_D{i}.csv")
+    results_df.to_csv(f"Data/Gevoeligheidsanalyse/GVA_UV4_D{i}.csv")
 

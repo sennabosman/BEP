@@ -4,7 +4,7 @@ from utils import get_height_map
 
 class MissingPerson(Agent):
     """A person that gets missing in the mountains."""
-    def __init__(self, unique_id, x, y, model, path, georesq=False, avalanche=False):
+    def __init__(self, unique_id, x, y, model, path, georesq=True, avalanche=False):
         super().__init__(unique_id, model)
         self.unique_id = unique_id
         self.x = x
